@@ -26,39 +26,56 @@
                     <p class="pixel-description">
                         Embark on an epic journey through my digital realm. 
                         This is a showcase of my skills, projects, and adventures 
-                        in the world of IT development. Ready to explore?
+                        in the world of web development. Ready to explore?
                     </p>
                     
-                    <button class="pixel-button" id="startButton">
+                    <button class="pixel-button start-btn" id="startBtn">
                         <span class="button-text">START GAME</span>
-                        <span class="button-subtext">Press to Begin</span>
+                        <span class="button-icon">▶</span>
                     </button>
+                    
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <span class="stat-label">LEVEL:</span>
+                            <span class="stat-value">∞</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">XP:</span>
+                            <span class="stat-value">9999</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">SKILLS:</span>
+                            <span class="stat-value">MAX</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Right Side Content -->
             <div class="right-content">
                 <div class="character-container">
-                    <img src="images/character.png" alt="Pixel Character" class="character-sprite">
+                    <div class="character-sprite">
+                        <img src="images/character.png" alt="Pixel Character" class="character-image">
+                        <!-- Eye blink overlay -->
+                        <div class="character-eyes"></div>
+                    </div>
+                    
+                    <div class="pixel-particles">
+                        <span class="particle">✦</span>
+                        <span class="particle">✧</span>
+                        <span class="particle">✦</span>
+                        <span class="particle">✧</span>
+                        <span class="particle">✦</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Transition Animation Overlay -->
-    <div class="transition-overlay" id="transitionOverlay">
-        <div class="loading-container" id="loadingContainer">
-            <div class="pixel-loader"></div>
-            <p class="loading-text">LOADING...</p>
-        </div>
         
-        <div class="frame-container" id="frameContainer">
-            <img src="images/frame1.png" alt="Character Frame 1" id="frame1" class="character-frame">
-            <img src="images/frame2.png" alt="Character Frame 2" id="frame2" class="character-frame">
-            <img src="images/frame3.png" alt="Character Frame 3" id="frame3" class="character-frame">
-        </div>
-        
-        <div class="white-flash" id="whiteFlash"></div>
+        <!-- Decorative UI Elements -->
+        <div class="ui-corner top-left"></div>
+        <div class="ui-corner top-right"></div>
+        <div class="ui-corner bottom-left"></div>
+        <div class="ui-corner bottom-right"></div>
     </div>
     
     <script src="js/script.js"></script>

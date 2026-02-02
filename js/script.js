@@ -43,7 +43,7 @@ class PixelSound {
 const pixelSound = new PixelSound();
 
 // Button interactions
-const startBtn = document.getElementById('startButton');
+const startBtn = document.getElementById('startBtn');
 
 startBtn.addEventListener('mouseenter', () => {
     try {
