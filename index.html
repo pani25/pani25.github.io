@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Welcome</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+    
+    <div class="container">
+        <div class="content-wrapper">
+            <!-- Left Side Content -->
+            <div class="left-content">
+                <div class="pixel-box">
+                    <h1 class="pixel-title glitch" data-text="WELCOME TO OUR WEBSITE">
+                        WELCOME TO OUR WEBSITE
+                    </h1>
+                    
+                    <p class="pixel-description">
+                        Embark on an epic journey through my digital realm. 
+                        This is a showcase of my skills, projects, and adventures 
+                        in the world of IT development. Ready to explore?
+                    </p>
+                    
+                    <button class="pixel-button" id="startButton">
+                        <span class="button-text">START GAME</span>
+                        <span class="button-subtext">Press to Begin</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Side Content -->
+            <div class="right-content">
+                <div class="character-container">
+                    <img src="images/character.png" alt="Pixel Character" class="character-sprite">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transition Animation Overlay -->
+    <div class="transition-overlay" id="transitionOverlay">
+        <div class="loading-container" id="loadingContainer">
+            <div class="pixel-loader"></div>
+            <p class="loading-text">LOADING...</p>
+        </div>
+        
+        <div class="frame-container" id="frameContainer">
+            <img src="images/frame1.png" alt="Character Frame 1" id="frame1" class="character-frame">
+            <img src="images/frame2.png" alt="Character Frame 2" id="frame2" class="character-frame">
+            <img src="images/frame3.png" alt="Character Frame 3" id="frame3" class="character-frame">
+        </div>
+        
+        <div class="white-flash" id="whiteFlash"></div>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>

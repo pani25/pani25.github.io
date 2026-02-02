@@ -1,0 +1,6 @@
+IMPORTANT: Save the pixel character image
+
+Please save the pixel character image (the one with red hoodie, glasses, blue jeans) as:
+d:\WEB-PORTOPOLIO\public\images\character.png
+
+The HTML and CSS have been updated to use this image path.

@@ -1,0 +1,5 @@
+# PHP Laravel files (not needed for static hosting)
+index.php
+
+# Optional: Ignore original landing file if you want
+# landing.html
