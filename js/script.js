@@ -167,33 +167,46 @@ const musicToggle = document.getElementById('musicToggle');
 const musicOnIcon = musicToggle.querySelector('.music-on');
 const musicOffIcon = musicToggle.querySelector('.music-off');
 
-// Auto-start music immediately on page load
+// Auto-start music on page load or first interaction
 let musicStarted = false;
 
-// Try to start music immediately
-window.addEventListener('DOMContentLoaded', () => {
-    try {
+// Fallback: start on first interaction if autoplay is blocked
+const startMusicOnInteraction = () => {
+    if (!musicStarted) {
         bgMusic.start();
         musicStarted = true;
         musicToggle.classList.add('playing');
-    } catch (e) {
-        console.log('Autoplay blocked, waiting for user interaction');
-        // Fallback: start on first interaction if autoplay is blocked
-        const startMusicOnInteraction = () => {
-            if (!musicStarted) {
-                bgMusic.start();
-                musicStarted = true;
-                musicToggle.classList.add('playing');
-                document.removeEventListener('click', startMusicOnInteraction);
-                document.removeEventListener('keydown', startMusicOnInteraction);
-                document.removeEventListener('touchstart', startMusicOnInteraction);
-            }
-        };
-        
-        document.addEventListener('click', startMusicOnInteraction);
-        document.addEventListener('keydown', startMusicOnInteraction);
-        document.addEventListener('touchstart', startMusicOnInteraction);
+        musicOnIcon.style.display = 'block';
+        musicOffIcon.style.display = 'none';
+        document.removeEventListener('click', startMusicOnInteraction);
+        document.removeEventListener('keydown', startMusicOnInteraction);
+        document.removeEventListener('touchstart', startMusicOnInteraction);
     }
+};
+
+// Try to start music immediately on page load
+window.addEventListener('DOMContentLoaded', () => {
+    // Small delay to ensure audio context can initialize properly
+    setTimeout(() => {
+        try {
+            bgMusic.start();
+            musicStarted = true;
+            musicToggle.classList.add('playing');
+            musicOnIcon.style.display = 'block';
+            musicOffIcon.style.display = 'none';
+        } catch (e) {
+            console.log('Autoplay blocked, waiting for user interaction');
+            // Set button to "off" state initially
+            musicToggle.classList.remove('playing');
+            musicOnIcon.style.display = 'none';
+            musicOffIcon.style.display = 'block';
+            
+            // Setup fallback listeners
+            document.addEventListener('click', startMusicOnInteraction);
+            document.addEventListener('keydown', startMusicOnInteraction);
+            document.addEventListener('touchstart', startMusicOnInteraction);
+        }
+    }, 100);
 });
 
 // Music toggle functionality
