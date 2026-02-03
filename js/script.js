@@ -1,3 +1,123 @@
+// Background Music Controller
+class BackgroundMusic {
+    constructor() {
+        this.audioContext = null;
+        this.oscillators = [];
+        this.gainNode = null;
+        this.isPlaying = false;
+        this.melodyIndex = 0;
+        this.melodyInterval = null;
+        
+        // 8-bit style melody (frequencies in Hz)
+        this.melody = [
+            523.25, 587.33, 659.25, 783.99, // C5, D5, E5, G5
+            880.00, 783.99, 659.25, 587.33, // A5, G5, E5, D5
+            523.25, 587.33, 659.25, 523.25, // C5, D5, E5, C5
+            659.25, 783.99, 880.00, 783.99  // E5, G5, A5, G5
+        ];
+        
+        this.bassTone = [
+            130.81, 146.83, 164.81, 196.00, // C3, D3, E3, G3
+            220.00, 196.00, 164.81, 146.83, // A3, G3, E3, D3
+            130.81, 146.83, 164.81, 130.81, // C3, D3, E3, C3
+            164.81, 196.00, 220.00, 196.00  // E3, G3, A3, G3
+        ];
+    }
+    
+    init() {
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.gainNode = this.audioContext.createGain();
+            this.gainNode.connect(this.audioContext.destination);
+            this.gainNode.gain.value = 0.08; // Volume level (reduced)
+        }
+    }
+    
+    playNote(frequency, duration, isBass = false) {
+        if (!this.audioContext) return;
+        
+        const oscillator = this.audioContext.createOscillator();
+        const noteGain = this.audioContext.createGain();
+        
+        oscillator.connect(noteGain);
+        noteGain.connect(this.gainNode);
+        
+        oscillator.type = 'square'; // 8-bit sound
+        oscillator.frequency.value = frequency;
+        
+        const now = this.audioContext.currentTime;
+        noteGain.gain.setValueAtTime(isBass ? 0.3 : 0.5, now);
+        noteGain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+        
+        oscillator.start(now);
+        oscillator.stop(now + duration);
+        
+        this.oscillators.push(oscillator);
+        
+        // Clean up after note finishes
+        setTimeout(() => {
+            const index = this.oscillators.indexOf(oscillator);
+            if (index > -1) this.oscillators.splice(index, 1);
+        }, duration * 1000);
+    }
+    
+    start() {
+        this.init();
+        if (this.isPlaying) return;
+        
+        this.isPlaying = true;
+        this.melodyIndex = 0;
+        
+        const playMelodyNote = () => {
+            if (!this.isPlaying) return;
+            
+            // Play melody note
+            this.playNote(this.melody[this.melodyIndex], 0.3);
+            // Play bass note
+            this.playNote(this.bassTone[this.melodyIndex], 0.3, true);
+            
+            this.melodyIndex = (this.melodyIndex + 1) % this.melody.length;
+        };
+        
+        // Start immediately
+        playMelodyNote();
+        
+        // Continue playing
+        this.melodyInterval = setInterval(playMelodyNote, 300);
+    }
+    
+    stop() {
+        this.isPlaying = false;
+        
+        if (this.melodyInterval) {
+            clearInterval(this.melodyInterval);
+            this.melodyInterval = null;
+        }
+        
+        // Stop all oscillators
+        this.oscillators.forEach(osc => {
+            try {
+                osc.stop();
+            } catch (e) {
+                // Oscillator might already be stopped
+            }
+        });
+        this.oscillators = [];
+    }
+    
+    toggle() {
+        if (this.isPlaying) {
+            this.stop();
+        } else {
+            this.start();
+        }
+        return this.isPlaying;
+    }
+}
+
+// Initialize background music
+const bgMusic = new BackgroundMusic();
+
 // Pixel sound effects (optional - using Web Audio API)
 class PixelSound {
     constructor() {
@@ -42,6 +162,65 @@ class PixelSound {
 // Initialize sound
 const pixelSound = new PixelSound();
 
+// Music toggle button
+const musicToggle = document.getElementById('musicToggle');
+const musicOnIcon = musicToggle.querySelector('.music-on');
+const musicOffIcon = musicToggle.querySelector('.music-off');
+
+// Auto-start music immediately on page load
+let musicStarted = false;
+
+// Try to start music immediately
+window.addEventListener('DOMContentLoaded', () => {
+    try {
+        bgMusic.start();
+        musicStarted = true;
+        musicToggle.classList.add('playing');
+    } catch (e) {
+        console.log('Autoplay blocked, waiting for user interaction');
+        // Fallback: start on first interaction if autoplay is blocked
+        const startMusicOnInteraction = () => {
+            if (!musicStarted) {
+                bgMusic.start();
+                musicStarted = true;
+                musicToggle.classList.add('playing');
+                document.removeEventListener('click', startMusicOnInteraction);
+                document.removeEventListener('keydown', startMusicOnInteraction);
+                document.removeEventListener('touchstart', startMusicOnInteraction);
+            }
+        };
+        
+        document.addEventListener('click', startMusicOnInteraction);
+        document.addEventListener('keydown', startMusicOnInteraction);
+        document.addEventListener('touchstart', startMusicOnInteraction);
+    }
+});
+
+// Music toggle functionality
+musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent triggering the auto-start listener
+    
+    const isPlaying = bgMusic.toggle();
+    musicStarted = true;
+    
+    if (isPlaying) {
+        musicOnIcon.style.display = 'block';
+        musicOffIcon.style.display = 'none';
+        musicToggle.classList.add('playing');
+    } else {
+        musicOnIcon.style.display = 'none';
+        musicOffIcon.style.display = 'block';
+        musicToggle.classList.remove('playing');
+    }
+    
+    // Play click sound
+    try {
+        pixelSound.playClick();
+    } catch (e) {
+        console.log('Audio not available');
+    }
+});
+
 // Button interactions
 const startBtn = document.getElementById('startBtn');
 
@@ -59,6 +238,10 @@ startBtn.addEventListener('click', () => {
     } catch (e) {
         console.log('Audio not available');
     }
+    
+    // Stop background music
+    bgMusic.stop();
+    musicToggle.classList.remove('playing');
     
     // Start the transition animation sequence
     startTransitionAnimation();
